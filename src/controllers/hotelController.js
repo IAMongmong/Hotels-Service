@@ -102,4 +102,4 @@ const hotelController = {
   }
 };
 
-export default hotelController;
+export { hotelController };

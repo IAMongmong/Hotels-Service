@@ -53,6 +53,6 @@ const sequelize = new Sequelize(
     }
   }
   
-  createDatabaseIfNotExists();
+  await createDatabaseIfNotExists();
   
   export default sequelize;
