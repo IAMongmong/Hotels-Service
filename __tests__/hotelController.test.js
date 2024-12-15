@@ -1,22 +1,22 @@
 import { hotelController } from "../src/controllers/hotelController";
 import hotelService from "../src/services/hotelService";
-import { jest } from '@jest/globals'
+import { jest } from '@jest/globals';
+import sequelize from '../src/config/database.js';
 
 
 describe("hotelController", () => {
     describe("getHotelById", () => {
       afterEach(() => {
-        jest.clearAllMocks(); // 清除所有 mock 函式
+        jest.clearAllMocks();
         jest.mock('../src/services/hotelService');
       });
   
       it("should return hotel details when hotel is found", async () => {
-        // 模擬 hotelService.getHotelById 返回的結果
         const mockHotel = { id: 1, name: "Test Hotel", location: "Test City" };
-        hotelService.getHotelById = jest.fn(); // 模擬函式
+        hotelService.getHotelById = jest.fn();
         hotelService.getHotelById.mockResolvedValue(mockHotel);
   
-        const req = { params: { id: "1" } }; // 模擬 URL 參數
+        const req = { params: { id: "1" } };
         const res = {
           json: jest.fn(),
           status: jest.fn(() => res)
@@ -30,3 +30,8 @@ describe("hotelController", () => {
 
     });
   });
+
+  // Clean up database connections after all tests
+afterAll(async () => {
+  await sequelize.close();  // Close the database connection after all tests
+});

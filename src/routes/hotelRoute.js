@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import hotelController from '../controllers/hotelController.js';
+import { hotelController } from '../controllers/hotelController.js';
 
 const upload = multer({ dest: 'uploads/' });  // specify a temporary folder to store the uploaded files
 const router = express.Router();
