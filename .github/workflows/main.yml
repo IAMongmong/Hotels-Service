@@ -52,7 +52,7 @@ jobs:
       - name: Start container (via Docker Compose)
         run: |
           docker-compose up --build -d
-        # 假設 docker-compose.yml 中包含啟動 mysql 服務的設置
+          docker-compose exec -T db /bin/sh -c 'until mysqladmin ping -h"localhost" --silent; do echo "Waiting for mysql"; sleep 1; done'
           
       - name: Run tests
         run: npm test
