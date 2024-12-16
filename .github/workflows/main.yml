@@ -37,7 +37,7 @@ jobs:
 
       - name: Set up environment variables
         run: |
-          echo "DB_HOST=localhost" >> .env
+          echo "DB_HOST=db" >> .env
           echo "DB_PORT=3306" >> .env
           echo "DB_USER=root" >> .env
           echo "DB_PASSWORD=123456" >> .env
