@@ -1,7 +1,7 @@
 name: CI/CD Pipeline
 
 on:
-  push:
+  pull_request:
     branches:
       - unit_test
 
@@ -43,6 +43,15 @@ jobs:
           echo "DB_PASSWORD=123456" >> .env
           echo "DB_NAME=travel" >> .env
 
+      - name: Start MySQL container (via Docker Compose)
+        run: |
+          docker-compose -f docker-compose.yml up -d
+        # 假設 docker-compose.yml 中包含啟動 mysql 服務的設置
+
+      - name: Wait for MySQL to be ready
+        run: |
+          docker exec -t <container_name> mysqladmin -u root -p123456 ping --silent
+          
       - name: Run tests
         run: npm test
 
