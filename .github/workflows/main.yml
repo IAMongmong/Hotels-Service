@@ -52,8 +52,8 @@ jobs:
       - name: Install wait-for-it
         run: |
           curl -sSL https://github.com/vishnubob/wait-for-it/releases/download/v2.5.0/wait-for-it.sh -o wait-for-it.sh
-          cat wait-for-it.sh
-          chmod +x wait-for-it.sh
+          chmod +x /usr/local/bin/wait-for-it && \
+          ls -l /usr/local/bin/wait-for-it  # 確保腳本已經存在並具備執行權限
           
       - name: Start container (via Docker Compose)
         run: |
