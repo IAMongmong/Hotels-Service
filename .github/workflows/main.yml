@@ -19,9 +19,9 @@ jobs:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
+          --health-interval=5s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=10
 
     steps:
       - name: Checkout code
@@ -48,12 +48,15 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
-
+          
       - name: Start container (via Docker Compose)
         run: |
           docker-compose up --build -d
           docker-compose exec -T db /bin/sh -c 'until mysqladmin ping -h"localhost" --silent; do echo "Waiting for mysql"; sleep 1; done'
-          
+      
+      - name: Wait for 120 seconds
+        run: sleep 180
+      
       - name: Run tests
         run: npm test
 
