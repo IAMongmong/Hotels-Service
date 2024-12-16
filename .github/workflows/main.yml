@@ -52,12 +52,13 @@ jobs:
       - name: Install wait-for-it
         run: |
           curl -sSL https://github.com/vishnubob/wait-for-it/releases/download/v2.5.0/wait-for-it.sh -o wait-for-it.sh
+          cat wait-for-it.sh
           chmod +x wait-for-it.sh
           
       - name: Start container (via Docker Compose)
         run: |
           docker-compose up --build -d
-          ./wait-for-it.sh db:3306 --timeout=120 --strict -- echo "MySQL is ready!"
+          bash ./wait-for-it.sh db:3306 --timeout=120 --strict -- echo "MySQL is ready!"
           
       - name: Run tests
         run: npm test
