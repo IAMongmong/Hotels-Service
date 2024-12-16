@@ -1,5 +1,5 @@
-export default {
-    transform: {
-        "^.+\\.js$": "babel-jest",
-    }
-  }
+module.exports = {
+  clearMocks: true,
+  collectCoverage: true,
+  coverageDirectory: "coverage",
+};

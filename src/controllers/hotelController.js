@@ -1,8 +1,18 @@
-import hotelService from '../services/hotelService.js';
-import Hotel from '../models/hotel.js';
+const hotelService = require("../services/hotelService.js");
+const Hotel = require("../models/hotel.js");
 
-const hotelController = {
-  getFilteredHotels: async (req, res) => {
+module.exports = class hotelController {
+  constructor({ hotelService }) {
+    this.hotelService = hotelService;
+    console.log(typeof this.hotelService);
+    this.getFilteredHotels = this.getFilteredHotels.bind(this);
+    this.getHotelById = this.getHotelById.bind(this);
+    this.createHotel = this.createHotel.bind(this);
+    this.updateHotel = this.updateHotel.bind(this);
+    this.deleteHotel = this.deleteHotel.bind(this);
+  }
+
+  async getFilteredHotels(req, res) {
     try {
       const { country, city, is_open } = req.query;
 
@@ -12,94 +22,94 @@ const hotelController = {
       if (city) filter.city = city;
       if (is_open !== undefined) filter.is_open = is_open;
 
-      const hotels = await hotelService.getFilteredHotels(filter);
+      const hotels = await this.hotelService.getFilteredHotels(filter);
 
       if (hotels.length === 0) {
-        return res.status(404).json({ error: 'No hotels found with the specified filters' });
+        return res
+          .status(404)
+          .json({ error: "No hotels found with the specified filters" });
       }
 
       res.status(200).json(hotels);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch hotels with filters' });
+      res.status(500).json({ error: "Failed to fetch hotels with filters" });
     }
-  },
+  }
 
-  getHotelById: async (req, res) => {
+  async getHotelById(req, res) {
     try {
       const hotelId = req.params.id;
-      const hotel = await hotelService.getHotelById(hotelId);
+      const hotel = await this.hotelService.getHotelById(hotelId);
       if (!hotel) {
-        return res.status(404).json({ error: 'Hotel not found' });
+        return res.status(404).json({ error: "Hotel not found" });
       }
       res.status(200).json(hotel);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch hotel by ID' });
+      res.status(500).json({ error: "Failed to fetch hotel by ID" });
     }
-  },
+  }
 
-  createHotel: async (req, res) => {
+  async createHotel(req, res) {
     try {
-      if (req.is('multipart/form-data')) {
+      if (req.is("multipart/form-data")) {
         if (!req.file) {
-          return res.status(400).json({ error: 'No file uploaded' });
+          return res.status(400).json({ error: "No file uploaded" });
         }
 
         const filePath = req.file.path;
-        await hotelService.addHotelsFromCsv(filePath);
-        return res.status(200).json({ message: 'Hotels data uploaded and saved successfully!' });
-      } 
-      else if (req.is('application/json')) {
+        await this.hotelService.addHotelsFromCsv(filePath);
+        return res
+          .status(200)
+          .json({ message: "Hotels data uploaded and saved successfully!" });
+      } else if (req.is("application/json")) {
         const hotelsData = req.body;
-        await hotelService.addHotelsFromJson(hotelsData);
-        return res.status(200).json({ message: 'Hotel(s) added successfully!' });
-      }
-      else {
-        return res.status(400).json({ error: 'Invalid Content-Type' });
+        await this.hotelService.addHotelsFromJson(hotelsData);
+        return res
+          .status(200)
+          .json({ message: "Hotel(s) added successfully!" });
+      } else {
+        return res.status(400).json({ error: "Invalid Content-Type" });
       }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: error.message || 'Something went wrong' });
+      res.status(500).json({ error: error.message || "Something went wrong" });
     }
-  },
+  }
 
-  updateHotel: async (req, res) => {
+  async updateHotel(req, res) {
     try {
       const hotelId = req.params.id;
       const hotelData = req.body;
-
-      const hotel = await Hotel.findByPk(hotelId);
-      if (!hotel) {
-        return res.status(404).json({ error: 'Hotel not found' });
+  
+      const result = await this.hotelService.updateHotel(hotelId, hotelData);
+  
+      if (!result) {
+        return res.status(404).json({ error: "Hotel not found" });
       }
-
-      await hotel.update(hotelData);
-
-      res.status(200).json({ message: 'Hotel updated successfully' });
+  
+      res.status(200).json({ message: "Hotel updated successfully" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to update hotel' });
+      res.status(500).json({ error: "Failed to update hotel" });
     }
-  },
-
-  deleteHotel: async (req, res) => {
+  }
+  
+  async deleteHotel(req, res) {
     try {
       const hotelId = req.params.id;
 
-      const hotel = await Hotel.findByPk(hotelId);
-      if (!hotel) {
-        return res.status(404).json({ error: 'Hotel not found' });
+      const result = await this.hotelService.deleteHotel(hotelId);
+  
+      if (!result) {
+        return res.status(404).json({ error: "Hotel not found" });
       }
-
-      await hotel.destroy();
-
-      res.status(200).json({ message: 'Hotel deleted successfully' });
+  
+      res.status(200).json({ message: "Hotel deleted successfully" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to delete hotel' });
+      res.status(500).json({ error: "Failed to delete hotel" });
     }
-  }
+  }  
 };
-
-export { hotelController };

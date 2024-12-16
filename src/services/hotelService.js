@@ -1,33 +1,37 @@
-import hotelRepository from '../repositories/hotelRepository.js';
+const hotelRepository = require("../repositories/hotelRepository.js");
 
-const hotelService = {
-  getFilteredHotels: async (filter) => {
+module.exports = class hotelService {
+  constructor({ hotelRepository }) {
+    this.hotelRepository = hotelRepository;
+  }
+
+  async getFilteredHotels(filter) {
     try {
-      return await hotelRepository.getHotelsByFilter(filter);
+      console.log("Filter used for hotels:", filter);
+      return await this.hotelRepository.getHotelsByFilter(filter);
     } catch (error) {
-      throw new Error('Failed to fetch hotels by filter');
+      console.log(error); // Fixed the missing console.log argument
+      throw new Error("Failed to fetch hotels by filter");
     }
-  },
+  }
 
-  getHotelById: async (hotelId) => {
-    return await hotelRepository.getHotelById(hotelId);
-  },
-  
-  addHotelsFromCsv: async (file) => {
-    return await hotelRepository.addHotelsFromCsv(file);
-  },
+  async getHotelById(hotelId) {
+    return await this.hotelRepository.getHotelById(hotelId);
+  }
 
-  addHotelsFromJson: async (hotelsData) => {
-    return await hotelRepository.addHotelsFromJson(hotelsData);
-  },
+  async addHotelsFromCsv(file) {
+    return await this.hotelRepository.addHotelsFromCsv(file);
+  }
 
-  updateHotel: async (hotelId, hotelData) => {
-    return await hotelRepository.updateHotel(hotelId, hotelData);
-  },
+  async addHotelsFromJson(hotelsData) {
+    return await this.hotelRepository.addHotelsFromJson(hotelsData);
+  }
 
-  deleteHotel: async (hotelId) => {
-    return await hotelRepository.deleteHotel(hotelId);
-  },
+  async updateHotel(hotelId, hotelData) {
+    return await this.hotelRepository.updateHotel(hotelId, hotelData);
+  }
+
+  async deleteHotel(hotelId) {
+    return await this.hotelRepository.deleteHotel(hotelId);
+  }
 };
-
-export default hotelService;

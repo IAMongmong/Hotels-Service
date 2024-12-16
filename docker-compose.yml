@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -15,8 +15,8 @@ services:
       - DB_NAME=travel
     depends_on:
       db:
-        condition: service_healthy  
-        
+        condition: service_healthy
+
     networks:
       - app-network
 
@@ -27,10 +27,22 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: travel
     healthcheck:
-      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p123456", "-e", "SELECT 1"]
+      test:
+        [
+          "CMD",
+          "mysql",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p123456",
+          "-e",
+          "SELECT 1",
+        ]
       interval: 15s
       timeout: 10s
       retries: 10
+      start_period: 30s
     ports:
       - "3306:3306"
     volumes:

@@ -1,35 +1,37 @@
-import Hotel from '../models/hotel.js';
-import fs from 'fs';
-import csvParser from 'csv-parser';
+const Hotel = require("../models/hotel.js");
+const fs = require("fs");
+const csvParser = require("csv-parser");
 
-const hotelRepository = {
-  getHotelsByFilter: async (filter) => {
+module.exports = class hotelRepository {
+  async getHotelsByFilter(filter) {
     try {
       const hotels = await Hotel.findAll({
         where: filter,
       });
       return hotels;
     } catch (error) {
-      throw new Error('Error fetching hotels from the database');
+      console.log(error);
+      throw new Error("Error fetching hotels from the database");
+      // console.log(filter);
     }
-  },
+  }
 
-  getHotelById: async (hotelId) => {
+  async getHotelById(hotelId) {
     try {
       const hotel = await Hotel.findByPk(hotelId);
       return hotel;
     } catch (error) {
-      console.error('Error fetching hotel by ID:', error);
-      throw new Error('Database query failed');
+      console.error("Error fetching hotel by ID:", error);
+      throw new Error("Database query failed");
     }
-  },
+  }
 
-  addHotelsFromCsv: async (filePath) => {
+  async addHotelsFromCsv(filePath) {
     const hotelsData = [];
     return new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
         .pipe(csvParser())
-        .on('data', (row) => {
+        .on("data", (row) => {
           hotelsData.push({
             name: row.name,
             address: row.address,
@@ -42,23 +44,23 @@ const hotelRepository = {
             is_open: row.is_open,
           });
         })
-        .on('end', async () => {
+        .on("end", async () => {
           try {
             await Hotel.bulkCreate(hotelsData);
             resolve();
           } catch (error) {
-            console.error('Error saving hotel data to database:', error);
-            reject(new Error('Failed to save hotel data to database'));
+            console.error("Error saving hotel data to database:", error);
+            reject(new Error("Failed to save hotel data to database"));
           }
         })
-        .on('error', (error) => {
-          console.error('Error parsing CSV data:', error);
-          reject(new Error('Failed to parse CSV data'));
+        .on("error", (error) => {
+          console.error("Error parsing CSV data:", error);
+          reject(new Error("Failed to parse CSV data"));
         });
     });
-  },
+  }
 
-  addHotelsFromJson: async (hotelsData) => {
+  async addHotelsFromJson(hotelsData) {
     try {
       const parsedData = hotelsData.map((row) => ({
         name: row.name,
@@ -73,12 +75,12 @@ const hotelRepository = {
       }));
       await Hotel.bulkCreate(parsedData);
     } catch (error) {
-      console.error('Error saving hotel data from JSON:', error);
-      throw new Error('Failed to save hotel data from JSON');
+      console.error("Error saving hotel data from JSON:", error);
+      throw new Error("Failed to save hotel data from JSON");
     }
-  },
+  }
 
-  updateHotel: async (hotelId, hotelData) => {
+  async updateHotel(hotelId, hotelData) {
     try {
       await Hotel.update(hotelData, {
         where: {
@@ -86,12 +88,12 @@ const hotelRepository = {
         },
       });
     } catch (error) {
-      console.error('Error updating hotel:', error);
-      throw new Error('Failed to update hotel');
+      console.error("Error updating hotel:", error);
+      throw new Error("Failed to update hotel");
     }
-  },
+  }
 
-  deleteHotel: async (hotelId) => {
+  async deleteHotel(hotelId) {
     try {
       await Hotel.destroy({
         where: {
@@ -99,10 +101,8 @@ const hotelRepository = {
         },
       });
     } catch (error) {
-      console.error('Error deleting hotel:', error);
-      throw new Error('Failed to delete hotel');
+      console.error("Error deleting hotel:", error);
+      throw new Error("Failed to delete hotel");
     }
-  },
+  }
 };
-
-export default hotelRepository;
