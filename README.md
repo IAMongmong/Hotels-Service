@@ -4,28 +4,18 @@ This project is a backend service for managing hotel data. It provides APIs to c
 
 ## Table of Contents
 
-- [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Testing](#testing)
 - [Docker](#docker)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Features
-
-- Create, read, update, and delete hotel records.
-- Upload hotel data via JSON and CSV files.
-- Error handling and validation.
-- Docker support for containerized deployment.
 
 ## Installation
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/IAMongmong/Hotels-Service.git
-    cd hotels-service
+    git clone https://github.com/IAMongmong/Hotels-Service-Backend.git
+    cd Hotels-Service-Backend
     ```
 
 2. Install dependencies:
@@ -65,3 +55,21 @@ This project is a backend service for managing hotel data. It provides APIs to c
 Run the tests using Jest:
 ```sh
 npm test
+```
+
+## Docker
+
+You can also run the service using Docker. Follow these steps:
+
+1. Build the Docker image:
+    ```sh
+    docker build -t hotels-service-backend -f dockerfiles/app-dockerfile .
+    ```
+
+2. Start the service using Docker Compose:
+    ```sh
+    docker-compose up
+    ```
+
+3. The service will be available at `http://localhost:3000`.
+
